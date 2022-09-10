@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Todo;
 use App\Models\Category;
 
-class TodosController extends Controller
+class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +15,7 @@ class TodosController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $todos = Todo::all();
-        return view('tasks.index', ['todos' => $todos, 'categories' => $categories]);
+        return view('categories.index', ['categories' => $categories]);
     }
 
     /**
@@ -29,16 +27,16 @@ class TodosController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|min:3',
-            'category_id' => 'required'
+            'name' => 'required|unique:categories|max:255',
+            'color' => 'required|max:7  '
         ]);
 
-        $todo = new Todo;
-        $todo->title = $request->title;
-        $todo->category_id = $request->category_id;
-        $todo->save();
+        $category = new Category;
+        $category->name = $request->name;
+        $category->color = $request->color;
+        $category->save();
 
-        return redirect('tasks')->with('success', 'The task was created successfully.');
+        return redirect()->route('categories.index')->with('success', 'New category added successfully');
     }
 
     /**
@@ -49,9 +47,8 @@ class TodosController extends Controller
      */
     public function edit($id)
     {
-        $categories = Category::all();
-        $todo = Todo::find($id);
-        return view('tasks.edit', ['todo' => $todo, 'categories' => $categories]);
+        $category = Category::find($id);
+        return view('categories.edit', ['category' => $category]);
     }
 
     /**
@@ -63,11 +60,12 @@ class TodosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $todo = Todo::find($id);
-        $todo->title = $request->title;
-        $todo->category_id = $request->category_id;
-        $todo->save();
-        return redirect('tasks')->with('success', 'The task was updated successfully.');
+        $category = Category::find($id);
+        $category->name = $request->name;
+        $category->color = $request->color;
+        $category->save();
+
+        return redirect('categories')->with('success', 'Category updated successfully.');
     }
 
     /**
@@ -78,8 +76,8 @@ class TodosController extends Controller
      */
     public function destroy($id)
     {
-        $todo = Todo::find($id);
-        $todo->delete();
-        return redirect('tasks')->with('success', 'The task was deleted successfully.');
+        $category = Category::find($id);
+        $category->delete();
+        return redirect('categories')->with('success', 'Category deleted successfully.');
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodosController;
+use App\Http\Controllers\CategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,5 @@ use App\Http\Controllers\TodosController;
 */
 
 
-Route::resource('tasks', TodosController::class);
+Route::resource('tasks', TodosController::class)->only(['index', 'store', 'edit', 'update','destroy']);
+Route::resource('categories', CategoriesController::class);
